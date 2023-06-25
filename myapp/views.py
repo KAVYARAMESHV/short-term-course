@@ -79,7 +79,7 @@ def view_course(request):
     }
 
     # return render(request, 'admin/short-course-view.html', context)
-    return render(request,'admin/demoview.html',context)
+    return render(request, 'admin/courseview.html', context)
 
 
 
