@@ -11,6 +11,19 @@ from myapp.models import *
 def login_page(request):
     return render(request,'login.html')
 
+
+from django.http import HttpResponse
+from django.shortcuts import render
+from myapp.models import *
+
+
+def home(request):
+    res = login.objects.get(id=request.session['id'])
+    if res not in request.session or request.session['id'] == "":
+        return HttpResponse("<script>alert('User Not Found');window.location='/myapp/login/'</script>")
+    else:
+        return render(request,'admin/index.html')
+
 def login_post(request):
     uname = request.POST['Email']
     pwrd = request.POST['Password']
@@ -28,15 +41,15 @@ def login_post(request):
         print(type)
         return HttpResponse("<script>alert('User Not Found');window.location='/myapp/login/'</script>")
 
-def home(request):
-    return render(request,'admin/index.html')
-
-# Course manage
-
 
 
 def add_course(request):
-    return render(request,'admin/short-course-create.html')
+    res = login.objects.get(id=request.session['id'])
+    if res not in request.session or request.session['id'] == "":
+
+        return HttpResponse("<script>alert('User Not Found');window.location='/myapp/login/'</script>")
+    else:
+        return render(request, 'admin/short-course-create.html')
 
 def addcourse_post(request):
     title = request.POST['title']
@@ -68,18 +81,22 @@ def addcourse_post(request):
     return redirect(view_course)
 
 def view_course(request):
-    res = course.objects.all()
-    items_per_page = 3
-    paginator = Paginator(res, items_per_page)
+    res = login.objects.get(id=request.session['id'])
+    if res not in request.session or request.session['id'] == "":
+        return HttpResponse("<script>alert('User Not Found');window.location='/myapp/login/'</script>")
+    else:
+        res = course.objects.all()
+        items_per_page = 3
+        paginator = Paginator(res, items_per_page)
 
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    context = {
-        'page_obj': page_obj
-    }
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context = {
+            'page_obj': page_obj
+        }
 
     # return render(request, 'admin/short-course-view.html', context)
-    return render(request, 'admin/courseview.html', context)
+        return render(request, 'admin/courseview.html', context)
 
 
 
@@ -136,7 +153,11 @@ def edit_coursepost(request):
 
 
 def viewprofile(request):
-    return render(request,'admin/profile.html')
+    res = login.objects.get(id=request.session['id'])
+    if res not in request.session or request.session['id'] == "":
+        return HttpResponse("<script>alert('User Not Found');window.location='/myapp/login/'</script>")
+    else:
+        return render(request,'admin/profile.html')
 
 
 def changepswrd_post(request):
